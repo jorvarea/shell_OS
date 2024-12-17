@@ -49,12 +49,16 @@ int main(void)
 			continue;
 		else if (strcmp(args[0], "cd") == 0)
 			cd(&shell, args);
-		
-		pid_fork = safe_fork();
-		if (pid_fork == 0)
+		else
 		{
-			if (execvp(args[0], args) == -1)
-				ft_perror(&shell, "execvp", NULL);
+			pid_fork = safe_fork();
+			if (pid_fork == 0)
+			{
+				if (execvp(args[0], args) == -1)
+					ft_perror(&shell, "execvp", NULL);
+			}
+			else
+				waitpid(pid_fork, &status, 0);
 		}
 
 		/* the steps are:
