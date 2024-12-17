@@ -25,9 +25,9 @@ YELLOW=\033[33m
 all : line $(NAME)
 
 $(NAME) : $(OBJ)
-	@echo "✦ ---------------------- ✦$(END)"
+	@echo "$(GREEN)✦ ---------------------- ✦"
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
-	@echo "$(GREEN)  ✓  Linked: $(NAME) $(END)"
+	@echo "  ✓  Linked: $(NAME)"
 	@echo "✦ ---------------------- ✦$(END)"
 
 obj/%.o : src/%.c | obj
