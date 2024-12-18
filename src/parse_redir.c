@@ -1,22 +1,3 @@
-// -----------------------------------------------------------------------
-// Parse redirections operators '<' '>' once args structure has been built.
-// Include this file and call the function immediately after get_commad():
-//
-//     #include "parse_redir.h"
-//     ...
-//     while(...){
-//          // Shell main loop
-//          ...
-//          get_command(...);
-//          char *file_in, *file_out;
-//          parse_redirections(args, &file_in, &file_out);
-//          ...
-//     }
-//
-// For a valid redirection, a blank space is required before and after
-// redirection operators '<' or '>'.
-// --------------------------------------------------------------
-
 #include "shell.h"
 
 void parse_redirections(char **args,  char **file_in, char **file_out)
