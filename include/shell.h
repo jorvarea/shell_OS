@@ -4,13 +4,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <termios.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <sys/errno.h>
+
+#include "job_control.h"
 
 # define MAX_ENV_SIZE 4096
 #define RESET "\033[0m"
@@ -24,6 +20,7 @@
 typedef struct s_shell
 {
 	int				exit_status;
+	job				*job_l;
 }	t_shell;
 
 #endif
