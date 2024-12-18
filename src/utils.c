@@ -7,9 +7,9 @@ void	invalid_flag_error(t_shell *shell, char *cmd, char invalid_flag, char *usag
 	fprintf(stderr, "%s: usage: %s\n", cmd, usage);
 }
 
-void	shell_error(t_shell *shell, char *msg)
+void	shell_error(t_shell *shell, char *msg, int exit_status)
 {
-	shell->exit_status = 1;
+	shell->exit_status = exit_status;
 	fprintf(stderr, "%s\n", msg);
 }
 

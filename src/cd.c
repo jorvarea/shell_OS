@@ -32,7 +32,7 @@ static void	take_me_home(t_shell *shell)
 	if (home)
 		change_directory(shell, home);
 	else
-		shell_error(shell, "-shell: cd: HOME not set");
+		shell_error(shell, "-shell: cd: HOME not set", 1);
 }
 
 static void	take_me_back(t_shell *shell)
@@ -50,7 +50,7 @@ static void	take_me_back(t_shell *shell)
 			ft_perror(shell, "getcwd", "");
 	}
 	else
-		shell_error(shell, "-shell: cd: OLDPWD not set");
+		shell_error(shell, "-shell: cd: OLDPWD not set", 1);
 }
 
 static void	process_cd_args(t_shell *shell, char **args)
@@ -69,7 +69,7 @@ void	cd(t_shell *shell, char **args)
 	if (found_flags(args))
 		invalid_flag_error(shell, "cd", args[1][1], "cd [dir]");
 	else if (count_words(args) > 2)
-		shell_error(shell, "-shell: cd: too many arguments");
+		shell_error(shell, "-shell: cd: too many arguments", 1);
 	else
 		process_cd_args(shell, args);
 }
