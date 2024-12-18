@@ -18,12 +18,12 @@ int open_file(t_shell *shell, char *filename, enum file_type type)
 	return (fd);
 }
 
-void	close_files(int *fd_in, int *fd_out, int n_files_in, int n_files_out)
+void	close_files(int fd_in, int fd_out)
 {
-    for (int i = 0; i < n_files_in; i++)
-        close(fd_in[i]);
-    for (int i = 0; i < n_files_out; i++)
-        close(fd_out[i]);
+    if (fd_in != -1)
+        close(fd_in);
+    if (fd_out != -1)
+        close(fd_out);
 }
 
 void	change_stdio(enum file_type type, int fd)
@@ -34,38 +34,30 @@ void	change_stdio(enum file_type type, int fd)
 		dup2(fd, STDOUT_FILENO);
 }
 
-void	execute_redir_cmd(t_shell *shell, char **args, int background, char **file_in, char **file_out)
+void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, char *file_out)
 {
 	bool	error;
-    int     fd_in[MAX_FDS];
-    int     fd_out[MAX_FDS];
-    int     n_files_in;
-    int     n_files_out;
-    int     i = 0;
+    int     fd_in;
+    int     fd_out;
 
 	error = false;
-	while (file_in[i] && !error)
+	if (file_in)
 	{
-        fd_in[i] = open_file(shell, file_in[i], INFILE);
-		if (fd_in[i] != -1)
-			change_stdio(INFILE, fd_in[i]);
+        fd_in = open_file(shell, file_in, INFILE);
+		if (fd_in != -1)
+			change_stdio(INFILE, fd_in);
 		else
 			error = true;
-		i++;
 	}
-    n_files_in = i;
-    i = 0;
-    while (file_out[i] && !error)
+    if (file_out)
 	{
-        fd_out[i] = open_file(shell, file_out[i], OUTFILE);
-		if (fd_out[i] != -1)
-			change_stdio(OUTFILE, fd_out[i]);
+        fd_out = open_file(shell, file_out, OUTFILE);
+		if (fd_out != -1)
+			change_stdio(OUTFILE, fd_out);
 		else
 			error = true;
-		i++;
 	}
-    n_files_out = i;
 	if (!error)
 		exec_cmd(shell, args, background);
-	close_files(fd_in, fd_out, n_files_in, n_files_out);
+	close_files(fd_in, fd_out);
 }

@@ -9,7 +9,6 @@
 #include "job_control.h"
 
 #define MAX_ENV_SIZE 4096
-#define MAX_FDS	1024
 
 #define RESET "\033[0m"
 #define RED "\033[0;31m"
@@ -27,6 +26,6 @@ typedef struct s_shell
 
 void	parse_redirections(char **args,  char **file_in, char **file_out);
 void	exec_cmd(t_shell *shell, char **args, int background);
-void	execute_redir_cmd(t_shell *shell, char **args, int background, char **file_in, char **file_out);
+void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, char *file_out);
 
 #endif

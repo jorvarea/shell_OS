@@ -15,8 +15,8 @@ int main(void)
 	char inputBuffer[MAX_LINE];
 	char *args[MAX_LINE/2];
 	int background;             /* equals 1 if a command is followed by '&' */
-	char **file_in;
-	char **file_out;
+	char *file_in;
+	char *file_out;
 	int original_stdin;
 	int original_stdout; 
 	
@@ -47,7 +47,7 @@ int main(void)
 		if (args[0] == NULL)
 			continue;
 		else
-			execute_redir_cmd(&shell, args, background, file_in, file_out);
+			exec_redir_cmd(&shell, args, background, file_in, file_out);
 
 		restore_io(original_stdin, original_stdout);
 	}
