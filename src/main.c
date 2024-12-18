@@ -1,50 +1,13 @@
-#include "job_control.h"
-#include "utils.h"
 #include "shell.h"
-#include "built_ins.h"
 
 #define MAX_LINE 256
 
-void execute_cmd(t_shell *shell, char **args, int background)
+static void	restore_io(int original_stdin, int original_stdout)
 {
-	pid_t pid_fork;
-	int status;
-	enum status status_res;
-	int info;
-
-	pid_fork = safe_fork();
-	if (pid_fork == 0)
-	{
-		new_process_group(0);
-		restore_terminal_signals();
-		if (execvp(args[0], args) == -1)
-		{
-			if (errno == ENOENT)
-			{
-				fprintf(stderr, "Error, command not found: %s\n", args[0]);
-				exit(127);
-			}
-			else
-			{
-				ft_perror(shell, "execvp", "");
-				exit(1);
-			}
-		}
-	}
-	else if (background == 0)
-	{
-		set_terminal(pid_fork);
-		waitpid(pid_fork, &status, WUNTRACED);
-		set_terminal(getpid());
-		status_res = analyze_status(status, &info);
-		if (info != 127)
-			printf("Foreground pid: %d, command: %s, %s, info: %d\n", pid_fork, args[0], status_strings[status_res], info);
-	}
-	else
-	{
-		add_job(shell->job_l, new_job(pid_fork, args[0], BACKGROUND));
-		printf("Background job running... pid: %d, command: %s\n", pid_fork, args[0]);
-	}
+	dup2(original_stdin, STDIN_FILENO);
+	close(original_stdin);
+	dup2(original_stdout, STDOUT_FILENO);
+	close(original_stdout);
 }
 
 int main(void)
@@ -52,6 +15,10 @@ int main(void)
 	char inputBuffer[MAX_LINE];
 	char *args[MAX_LINE/2];
 	int background;             /* equals 1 if a command is followed by '&' */
+	char **file_in;
+	char **file_out;
+	int original_stdin;
+	int original_stdout; 
 	
 	job job_l = {
 		.command = "Lista de trabajos",
@@ -72,17 +39,17 @@ int main(void)
 		printf(GREEN "COMMAND->" RESET);
 		fflush(stdout);
 		get_command(inputBuffer, MAX_LINE, args, &background);
-		
-		if (args[0] == NULL) 
+		parse_redirections(args, &file_in, &file_out);
+
+		original_stdin = dup(STDIN_FILENO);
+		original_stdout = dup(STDOUT_FILENO);
+
+		if (args[0] == NULL)
 			continue;
-		else if (strcmp(args[0], "cd") == 0)
-			cd(&shell, args);
-		else if (strcmp(args[0], "jobs") == 0)
-			print_job_list(&job_l);
-		else if (strcmp(args[0], "fg") == 0)
-			fg(&shell, args);
 		else
-			execute_cmd(&shell, args, background);
+			execute_redir_cmd(&shell, args, background, file_in, file_out);
+
+		restore_io(original_stdin, original_stdout);
 	}
 	// liberar memoria: jobs
 	return (0);

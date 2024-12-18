@@ -19,7 +19,8 @@
 
 #include "shell.h"
 
-static void parse_redirections(char **args,  char **file_in, char **file_out){
+void parse_redirections(char **args,  char **file_in, char **file_out)
+{
     *file_in = NULL;
     *file_out = NULL;
     char **args_start = args;
