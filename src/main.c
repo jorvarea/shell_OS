@@ -1,29 +1,19 @@
-/**
-UNIX Shell Project
-
-Sistemas Operativos
-Grados I. Informatica, Computadores & Software
-Dept. Arquitectura de Computadores - UMA
-
-Some code adapted from "Fundamentos de Sistemas Operativos", Silberschatz et al.
-
-To compile and run the program:
-   $ gcc Shell_project.c job_control.c -o Shell
-   $ ./Shell          
-	(then type ^D to exit program)
-
-**/
-
 #include "job_control.h"
 #include "utils.h"
 #include "shell.h"
 #include "built_ins.h"
 
-#define MAX_LINE 256 /* 256 chars per line, per command, should be enough. */
+#define MAX_LINE 256
 
-// -----------------------------------------------------------------------
-//                            MAIN          
-// -----------------------------------------------------------------------
+void init_signal_handlers()
+{
+	signal(SIGINT, SIG_IGN);
+}
+
+void restore_signal_handlers()
+{
+	signal(SIGINT, SIG_DFL);
+}
 
 int main(void)
 {
@@ -38,12 +28,13 @@ int main(void)
 	t_shell shell;
 
 	shell.exit_status = 0;
+	ignore_terminal_signals();
 
 	while (1)   /* Program terminates normally inside get_command() after ^D is typed*/
 	{   		
-		printf("COMMAND->");
+		printf(GREEN "COMMAND->" RESET);
 		fflush(stdout);
-		get_command(inputBuffer, MAX_LINE, args, &background);  /* get next command */
+		get_command(inputBuffer, MAX_LINE, args, &background);
 		
 		if (args[0] == NULL) 
 			continue;
@@ -54,6 +45,7 @@ int main(void)
 			pid_fork = safe_fork();
 			if (pid_fork == 0)
 			{
+				restore_terminal_signals();
 				if (execvp(args[0], args) == -1)
 					ft_perror(&shell, "execvp", NULL);
 			}
