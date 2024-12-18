@@ -1,7 +1,13 @@
 #ifndef _JOB_CONTROL_H
 #define _JOB_CONTROL_H
 
-#include "shell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <termios.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 // ----------- ENUMERATIONS ---------------------------------------------
 enum status { SUSPENDED, SIGNALED, EXITED, CONTINUED};
@@ -51,6 +57,7 @@ void mask_signal(int signal, int block);
 #define restore_terminal_signals()   terminal_signals(SIG_DFL)
 #define ignore_terminal_signals() terminal_signals(SIG_IGN)
 
+#define set_terminal(pid)        tcsetpgrp (STDIN_FILENO,pid)
 #define new_process_group(pid)   setpgid(pid, pid)
 
 #define block_SIGCHLD()   	 mask_signal(SIGCHLD, SIG_BLOCK)
