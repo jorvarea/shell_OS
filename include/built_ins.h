@@ -3,6 +3,7 @@
 
 #include "shell.h"
 
-void	cd(t_shell *shell, char **args);
+void    cd(t_shell *shell, char **args);
+void    fg(t_shell *shell, char **args);
 
 #endif

@@ -5,32 +5,69 @@
 
 #define MAX_LINE 256
 
-void init_signal_handlers()
+void execute_cmd(t_shell *shell, char **args, int background)
 {
-	signal(SIGINT, SIG_IGN);
-}
+	pid_t pid_fork;
+	int status;
+	enum status status_res;
+	int info;
 
-void restore_signal_handlers()
-{
-	signal(SIGINT, SIG_DFL);
+	pid_fork = safe_fork();
+	if (pid_fork == 0)
+	{
+		new_process_group(0);
+		restore_terminal_signals();
+		if (execvp(args[0], args) == -1)
+		{
+			if (errno == ENOENT)
+			{
+				fprintf(stderr, "Error, command not found: %s\n", args[0]);
+				exit(127);
+			}
+			else
+			{
+				ft_perror(shell, "execvp", "");
+				exit(1);
+			}
+		}
+	}
+	else if (background == 0)
+	{
+		set_terminal(pid_fork);
+		waitpid(pid_fork, &status, WUNTRACED);
+		set_terminal(getpid());
+		status_res = analyze_status(status, &info);
+		if (info != 127)
+			printf("Foreground pid: %d, command: %s, %s, info: %d\n", pid_fork, args[0], status_strings[status_res], info);
+	}
+	else
+	{
+		add_job(shell->job_l, new_job(pid_fork, args[0], BACKGROUND));
+		printf("Background job running... pid: %d, command: %s\n", pid_fork, args[0]);
+	}
 }
 
 int main(void)
 {
-	char inputBuffer[MAX_LINE]; /* buffer to hold the command entered */
+	char inputBuffer[MAX_LINE];
+	char *args[MAX_LINE/2];
 	int background;             /* equals 1 if a command is followed by '&' */
-	char *args[MAX_LINE/2];     /* command line (of 256) has max of 128 arguments */
+	
+	job job_l = {
+		.command = "Lista de trabajos",
+		.pgid = 0,
+		.state = 0,
+		.next = NULL
+	};
 
-	pid_t pid_fork, pid_wait; /* pid for created and waited process */
-	int status;             /* status returned by wait */
-	enum status status_res; /* status processed by analyze_status() */
-	int info;				/* info processed by analyze_status() */
-	t_shell shell;
+	t_shell shell = {
+		.exit_status = 0,
+		.job_l = &job_l
+	};
 
-	shell.exit_status = 0;
 	ignore_terminal_signals();
 
-	while (1)   /* Program terminates normally inside get_command() after ^D is typed*/
+	while (1)
 	{   		
 		printf(GREEN "COMMAND->" RESET);
 		fflush(stdout);
@@ -40,26 +77,13 @@ int main(void)
 			continue;
 		else if (strcmp(args[0], "cd") == 0)
 			cd(&shell, args);
+		else if (strcmp(args[0], "jobs") == 0)
+			print_job_list(&job_l);
+		else if (strcmp(args[0], "fg") == 0)
+			fg(&shell, args);
 		else
-		{
-			pid_fork = safe_fork();
-			if (pid_fork == 0)
-			{
-				restore_terminal_signals();
-				if (execvp(args[0], args) == -1)
-					ft_perror(&shell, "execvp", NULL);
-			}
-			else
-				waitpid(pid_fork, &status, 0);
-		}
-
-		/* the steps are:
-			 (1) fork a child process using fork()
-			 (2) the child process will invoke execvp()
-			 (3) if background == 0, the parent will wait, otherwise continue 
-			 (4) Shell shows a status message for processed command 
-			 (5) loop returns to get_commnad() function
-		*/
-
+			execute_cmd(&shell, args, background);
 	}
+	// liberar memoria: jobs
+	return (0);
 }
