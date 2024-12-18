@@ -21,7 +21,7 @@ void	ft_perror(t_shell *shell, char *function, char *arg)
 		printf("%s: ", function);
 	if (arg && arg[0] != '\0')
 		printf("%s: ", arg);
-	perror("");
+	printf("%s\n", strerror(errno));
 }
 
 pid_t	safe_fork(void)

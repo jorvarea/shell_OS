@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/errno.h>
 
 # define MAX_ENV_SIZE 4096
 #define RESET "\033[0m"
