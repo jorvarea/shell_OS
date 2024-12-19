@@ -1,1 +1,1 @@
-zip -r shell_SO_GCIA_34.zip include src Makefile filezip.sh
+zip -r shell_SO_GCIA_34.zip include src Makefile filezip_examen.sh apuntes.txt
