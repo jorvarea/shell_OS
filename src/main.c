@@ -29,7 +29,7 @@ void child_handler(int signal_id)
 		if (job != NULL)
 		{
 			status_res = analyze_status(status, &info);
-			if (status_res == EXITED)
+			if (status_res == EXITED || status_res == SIGNALED)
 			{
 				fprintf(stderr, "Background pid: %d, command: %s, %s, info: %d\n", pid_wait, job->command, status_strings[status_res], info);
 				delete_job(shell.job_l, job);
