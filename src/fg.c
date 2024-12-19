@@ -16,7 +16,7 @@ void bring_job_foreground(job *background_job)
     if (set_terminal(getpid()) == -1)
         ft_perror("tcsetpgrp", "");
     status_res = analyze_status(status, &info);
-    if (status_res == EXITED)
+    if (status_res == EXITED || status_res == SIGNALED)
         delete_job(shell.job_l, background_job);
     else if(status_res == SUSPENDED)
         background_job->state = STOPPED;
