@@ -52,8 +52,10 @@ static void exec_bin(char **args, int background)
     }
     else
     {
+        block_SIGCHLD();
         add_job(shell.job_l, new_job(pid_fork, args[0], BACKGROUND));
         fprintf(stderr, "Background job running... pid: %d, command: %s\n", pid_fork, args[0]);
+        unblock_SIGCHLD();
     }
 }
 
@@ -62,9 +64,17 @@ void exec_cmd(char **args, int background)
     if (strcmp(args[0], "cd") == 0)
         cd(args);
     else if (strcmp(args[0], "jobs") == 0)
+    {
+        block_SIGCHLD();
         print_job_list(shell.job_l);
+        unblock_SIGCHLD();
+    }
     else if (strcmp(args[0], "fg") == 0)
+    {
+        block_SIGCHLD();
         fg(args);
+        unblock_SIGCHLD();
+    }
     else
         exec_bin(args, background);
 }

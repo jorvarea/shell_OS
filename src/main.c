@@ -34,9 +34,10 @@ void child_handler(int signal_id)
 				fprintf(stderr, "Background pid: %d, command: %s, %s, info: %d\n", pid_wait, job->command, status_strings[status_res], info);
 				delete_job(shell.job_l, job);
 			}
+			else if (status_res == SUSPENDED)
+				job->state = STOPPED;
 		}
 	}
-
 	unblock_SIGCHLD();
 }
 
