@@ -13,8 +13,14 @@ static void exec_bin(t_shell *shell, char **args, int background)
 	pid_fork = safe_fork();
 	if (pid_fork == 0)
 	{
-		new_process_group(0);
 		restore_terminal_signals();
+		new_process_group(getpid());
+        if (background != 1)
+        {
+            if (set_terminal(getpid()) == -1)
+                ft_perror(shell, "tcsetpgrp", "");
+           
+        }
 		if (execvp(args[0], args) == -1)
 		{
 			if (errno == ENOENT)
@@ -29,20 +35,23 @@ static void exec_bin(t_shell *shell, char **args, int background)
 			}
 		}
 	}
-	else if (background != 1)
-	{
-		set_terminal(pid_fork);
-		waitpid(pid_fork, &status, WUNTRACED);
-		set_terminal(getpid());
-		status_res = analyze_status(status, &info);
-		if (info != 127)
-			printf("Foreground pid: %d, command: %s, %s, info: %d\n", pid_fork, args[0], status_strings[status_res], info);
-	}
-	else
-	{
-		add_job(shell->job_l, new_job(pid_fork, args[0], BACKGROUND));
-		printf("Background job running... pid: %d, command: %s\n", pid_fork, args[0]);
-	}
+    else if (background != 1)
+    {
+        new_process_group(pid_fork);
+        if (set_terminal(pid_fork) == -1)
+            ft_perror(shell, "tcsetpgrp", "");
+        if (waitpid(pid_fork, &status, WUNTRACED) == -1)
+            ft_perror(shell, "waitpid", "");
+        set_terminal(getpid());
+        status_res = analyze_status(status, &info);
+        if (info != 127)
+            fprintf(stderr, "Foreground pid: %d, command: %s, %s, info: %d\n", pid_fork, args[0], status_strings[status_res], info);
+    }
+    else
+    {
+        add_job(shell->job_l, new_job(pid_fork, args[0], BACKGROUND));
+        fprintf(stderr, "Background job running... pid: %d, command: %s\n", pid_fork, args[0]);
+    }
 }
 
 void exec_cmd(t_shell *shell, char **args, int background)

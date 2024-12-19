@@ -5,7 +5,7 @@
 
 enum file_type { INFILE, OUTFILE };
 
-int open_file(t_shell *shell, char *filename, enum file_type type)
+static int open_file(t_shell *shell, char *filename, enum file_type type)
 {
 	int fd = -1;
 
@@ -18,7 +18,7 @@ int open_file(t_shell *shell, char *filename, enum file_type type)
 	return (fd);
 }
 
-void	close_files(int fd_in, int fd_out)
+static void	close_files(int fd_in, int fd_out)
 {
     if (fd_in != -1)
         close(fd_in);
@@ -26,7 +26,7 @@ void	close_files(int fd_in, int fd_out)
         close(fd_out);
 }
 
-void	change_stdio(enum file_type type, int fd)
+static void	change_stdio(enum file_type type, int fd)
 {
 	if (type == INFILE)
 		dup2(fd, STDIN_FILENO);
@@ -34,11 +34,21 @@ void	change_stdio(enum file_type type, int fd)
 		dup2(fd, STDOUT_FILENO);
 }
 
+static void	restore_io(int original_stdin, int original_stdout)
+{
+	dup2(original_stdin, STDIN_FILENO);
+	close(original_stdin);
+	dup2(original_stdout, STDOUT_FILENO);
+	close(original_stdout);
+}
+
 void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, char *file_out)
 {
 	bool	error;
     int     fd_in;
     int     fd_out;
+    int original_stdin = dup(STDIN_FILENO);
+	int original_stdout = dup(STDOUT_FILENO);
 
 	error = false;
 	if (file_in)
@@ -60,4 +70,5 @@ void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, 
 	if (!error)
 		exec_cmd(shell, args, background);
 	close_files(fd_in, fd_out);
+    restore_io(original_stdin, original_stdout);
 }

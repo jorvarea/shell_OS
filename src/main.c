@@ -2,14 +2,6 @@
 
 #define MAX_LINE 256
 
-static void	restore_io(int original_stdin, int original_stdout)
-{
-	dup2(original_stdin, STDIN_FILENO);
-	close(original_stdin);
-	dup2(original_stdout, STDOUT_FILENO);
-	close(original_stdout);
-}
-
 int main(void)
 {
 	char inputBuffer[MAX_LINE];
@@ -17,8 +9,6 @@ int main(void)
 	int background;
 	char *file_in;
 	char *file_out;
-	int original_stdin;
-	int original_stdout; 
 	
 	job job_l = {
 		.command = "Lista de trabajos",
@@ -41,15 +31,10 @@ int main(void)
 		get_command(inputBuffer, MAX_LINE, args, &background);
 		parse_redirections(args, &file_in, &file_out);
 
-		original_stdin = dup(STDIN_FILENO);
-		original_stdout = dup(STDOUT_FILENO);
-
 		if (args[0] == NULL)
 			continue;
 		else
 			exec_redir_cmd(&shell, args, background, file_in, file_out);
-
-		restore_io(original_stdin, original_stdout);
 	}
 	// liberar memoria: jobs
 	return (0);
