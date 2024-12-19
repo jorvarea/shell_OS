@@ -5,5 +5,6 @@
 
 void    cd(char **args);
 void    fg(char **args);
+void    bg(char **args);
 
 #endif

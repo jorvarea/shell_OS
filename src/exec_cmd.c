@@ -75,6 +75,12 @@ void exec_cmd(char **args, int background)
         fg(args);
         unblock_SIGCHLD();
     }
+    else if (strcmp(args[0], "bg") == 0)
+    {
+        block_SIGCHLD();
+        bg(args);
+        unblock_SIGCHLD();
+    }
     else
         exec_bin(args, background);
 }

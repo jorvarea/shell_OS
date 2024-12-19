@@ -1,28 +1,19 @@
 #include "shell.h"
 
-void bring_job_foreground(job *background_job)
+void continue_job_background(job *background_job)
 {
-    int status;
-
-    if (set_terminal(background_job->pgid) == -1)
-        ft_perror("tcsetpgrp", "");
-    background_job->state = FOREGROUND;
+    background_job->state = BACKGROUND;
     if (killpg(background_job->pgid, SIGCONT) == -1)
         ft_perror("killpg", "SIGCONT");
-    if (waitpid(background_job->pgid, &status, WUNTRACED) == -1)
-        ft_perror("waitpid", "");
-    if (set_terminal(getpid()) == -1)
-        ft_perror("tcsetpgrp", "");
-    delete_job(shell.job_l, background_job);
 }
 
-void fg(char **args)
+void bg(char **args)
 {
     shell.exit_status = 0;
 	if (count_words(args) == 1)
     {
         if (shell.job_l->next)
-            bring_job_foreground(shell.job_l->next);
+            continue_job_background(shell.job_l->next);
         else
             shell_error("Job not found", 1);
     }
@@ -32,7 +23,7 @@ void fg(char **args)
         if (background_job == NULL)
             shell_error("Job not found", 1);
         else
-            bring_job_foreground(background_job);
+            continue_job_background(background_job);
     }
     else
 		shell_error("fg: too many arguments", 1);
