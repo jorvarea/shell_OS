@@ -1,1 +1,1 @@
-diff salida.txt shell.txt
+diff salida.txt shell.txt > diff.txt
