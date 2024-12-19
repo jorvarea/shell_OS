@@ -43,6 +43,8 @@ static void exec_bin(t_shell *shell, char **args, int background)
             ft_perror(shell, "waitpid", "");
         set_terminal(getpid());
         status_res = analyze_status(status, &info);
+        if (status_res == SUSPENDED)
+            add_job(shell->job_l, new_job(pid_fork, args[0], STOPPED));
         if (info != 127)
             fprintf(stderr, "Foreground pid: %d, command: %s, %s, info: %d\n", pid_fork, args[0], status_strings[status_res], info);
     }
