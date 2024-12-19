@@ -35,8 +35,6 @@ void child_handler(int signal_id)
 			delete_job(shell.job_l, job);
 		}
 	}
-	if (pid_wait == -1)
-		ft_perror("waitpid", "");
 
 	unblock_SIGCHLD();
 }
