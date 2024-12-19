@@ -20,8 +20,6 @@ void bring_job_foreground(t_shell *shell, job *background_job)
 
 void fg(t_shell *shell, char **args)
 {
-    int status;
-
     shell->exit_status = 0;
 	if (found_flags(args))
 		invalid_flag_error(shell, "cd", args[1][1], "fg [job_spec]");
