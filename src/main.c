@@ -22,8 +22,6 @@ void child_handler(int signal_id)
 	int info;
     int pid_wait;
 
-	(void)signal_id;
-
 	block_SIGCHLD();
 	while ((pid_wait = waitpid(-1, &status, WNOHANG)) > 0)
 	{
