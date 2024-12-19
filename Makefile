@@ -1,7 +1,7 @@
 NAME = a.out
 
 CC = gcc
-CFLAGS = -Iinclude -Wall -Wextra -Werror
+CFLAGS = -Iinclude -Wall -Wextra
 RM = rm -f
 
 SRC = $(wildcard src/*.c) $(wildcard *.c)
