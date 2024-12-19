@@ -7,6 +7,7 @@
 #include <sys/errno.h>
 
 #include "job_control.h"
+#include "utils.h"
 #include "global.h"
 
 #define MAX_ENV_SIZE 4096

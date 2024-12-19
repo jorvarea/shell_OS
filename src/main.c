@@ -16,12 +16,28 @@ t_shell shell = {
 
 void child_handler(int signal_id)
 {
+	job *job;
 	int status;
+	enum status status_res;
+	int info;
     int pid_wait;
 
+	(void)signal_id;
+
 	block_SIGCHLD();
-    pid_wait = waitpid(-1, &status, WNOHANG | WCONTINUED | WUNTRACED);
-    
+	while ((pid_wait = waitpid(-1, &status, WNOHANG)) > 0)
+	{
+		job = get_item_bypid(shell.job_l, pid_wait);
+		status_res = analyze_status(status, &info);
+        if (status_res == EXITED)
+		{
+			fprintf(stderr, "Background pid: %d, command: %s, %s, info: %d\n", pid_wait, job->command, status_strings[status_res], info);
+			delete_job(shell.job_l, job);
+		}
+	}
+	if (pid_wait == -1)
+		ft_perror("waitpid", "");
+
 	unblock_SIGCHLD();
 }
 
@@ -34,10 +50,11 @@ int main(void)
 	char *file_out;
 
 	ignore_terminal_signals();
+	signal(SIGCHLD, child_handler);
 
 	while (1)
 	{   		
-		printf(GREEN "COMMAND->" RESET);
+		printf(GREEN "shell ➜ " RESET);
 		fflush(stdout);
 		get_command(inputBuffer, MAX_LINE, args, &background);
 		parse_redirections(args, &file_in, &file_out);
