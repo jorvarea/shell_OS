@@ -36,6 +36,7 @@ static void exec_bin(char **args, int background)
 	}
     else if (background != 1)
     {
+        block_SIGCHLD();
         new_process_group(pid_fork);
         if (set_terminal(pid_fork) == -1)
             ft_perror("tcsetpgrp", "");
@@ -47,6 +48,7 @@ static void exec_bin(char **args, int background)
             add_job(shell.job_l, new_job(pid_fork, args[0], STOPPED));
         if (info != 127)
             fprintf(stderr, "Foreground pid: %d, command: %s, %s, info: %d\n", pid_fork, args[0], status_strings[status_res], info);
+        unblock_SIGCHLD();
     }
     else
     {

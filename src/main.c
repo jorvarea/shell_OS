@@ -28,11 +28,14 @@ void child_handler(int signal_id)
 	while ((pid_wait = waitpid(-1, &status, WNOHANG)) > 0)
 	{
 		job = get_item_bypid(shell.job_l, pid_wait);
-		status_res = analyze_status(status, &info);
-        if (status_res == EXITED)
+		if (job != NULL)
 		{
-			fprintf(stderr, "Background pid: %d, command: %s, %s, info: %d\n", pid_wait, job->command, status_strings[status_res], info);
-			delete_job(shell.job_l, job);
+			status_res = analyze_status(status, &info);
+			if (status_res == EXITED)
+			{
+				fprintf(stderr, "Background pid: %d, command: %s, %s, info: %d\n", pid_wait, job->command, status_strings[status_res], info);
+				delete_job(shell.job_l, job);
+			}
 		}
 	}
 
