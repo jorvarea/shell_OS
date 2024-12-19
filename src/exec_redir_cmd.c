@@ -45,8 +45,8 @@ static void	restore_io(int original_stdin, int original_stdout)
 void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, char *file_out)
 {
 	bool	error;
-    int     fd_in;
-    int     fd_out;
+    int     fd_in = -1;
+    int     fd_out = -1;
     int original_stdin = dup(STDIN_FILENO);
 	int original_stdout = dup(STDOUT_FILENO);
 
