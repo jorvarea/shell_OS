@@ -27,7 +27,7 @@ void fg(char **args)
     shell.exit_status = 0;
 	if (count_words(args) == 1)
     {
-        if (shell.job_l->next)
+        if (!empty_list(shell.job_l) && shell.job_l->next)
             bring_job_foreground(shell.job_l->next);
         else
             shell_error("Job not found", 1);

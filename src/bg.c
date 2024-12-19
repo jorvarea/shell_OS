@@ -12,7 +12,7 @@ void bg(char **args)
     shell.exit_status = 0;
 	if (count_words(args) == 1)
     {
-        if (shell.job_l->next && shell.job_l->next->state == STOPPED)
+        if (!empty_list(shell.job_l) && shell.job_l->next && shell.job_l->next->state == STOPPED)
             continue_job_background(shell.job_l->next);
         else if(shell.job_l->next && shell.job_l->next->state == BACKGROUND)
             shell_error("Job already in background", 0);
