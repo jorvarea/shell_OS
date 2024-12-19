@@ -19,7 +19,6 @@ static void exec_bin(t_shell *shell, char **args, int background)
         {
             if (set_terminal(getpid()) == -1)
                 ft_perror(shell, "tcsetpgrp", "");
-           
         }
 		if (execvp(args[0], args) == -1)
 		{
