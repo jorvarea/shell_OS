@@ -5,7 +5,7 @@
 
 enum file_type { INFILE, OUTFILE };
 
-static int open_file(t_shell *shell, char *filename, enum file_type type)
+static int open_file(char *filename, enum file_type type)
 {
 	int fd = -1;
 
@@ -14,7 +14,7 @@ static int open_file(t_shell *shell, char *filename, enum file_type type)
 	else if (type == OUTFILE)
 		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
-		ft_perror(shell, "open", filename);
+		ft_perror("open", filename);
 	return (fd);
 }
 
@@ -42,7 +42,7 @@ static void	restore_io(int original_stdin, int original_stdout)
 	close(original_stdout);
 }
 
-void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, char *file_out)
+void	exec_redir_cmd(char **args, int background, char *file_in, char *file_out)
 {
 	bool	error;
     int     fd_in = -1;
@@ -53,7 +53,7 @@ void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, 
 	error = false;
 	if (file_in)
 	{
-        fd_in = open_file(shell, file_in, INFILE);
+        fd_in = open_file(file_in, INFILE);
 		if (fd_in != -1)
 			change_stdio(INFILE, fd_in);
 		else
@@ -61,14 +61,14 @@ void	exec_redir_cmd(t_shell *shell, char **args, int background, char *file_in, 
 	}
     if (file_out)
 	{
-        fd_out = open_file(shell, file_out, OUTFILE);
+        fd_out = open_file(file_out, OUTFILE);
 		if (fd_out != -1)
 			change_stdio(OUTFILE, fd_out);
 		else
 			error = true;
 	}
 	if (!error)
-		exec_cmd(shell, args, background);
+		exec_cmd(args, background);
 	close_files(fd_in, fd_out);
     restore_io(original_stdin, original_stdout);
 }

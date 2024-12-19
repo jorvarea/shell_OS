@@ -3,7 +3,7 @@
 #include "job_control.h"
 #include "utils.h"
 
-static void exec_bin(t_shell *shell, char **args, int background)
+static void exec_bin(char **args, int background)
 {
 	pid_t pid_fork;
 	int status;
@@ -18,7 +18,7 @@ static void exec_bin(t_shell *shell, char **args, int background)
         if (background != 1)
         {
             if (set_terminal(getpid()) == -1)
-                ft_perror(shell, "tcsetpgrp", "");
+                ft_perror("tcsetpgrp", "");
         }
 		if (execvp(args[0], args) == -1)
 		{
@@ -29,7 +29,7 @@ static void exec_bin(t_shell *shell, char **args, int background)
 			}
 			else
 			{
-				ft_perror(shell, "execvp", "");
+				ft_perror("execvp", "");
 				exit(1);
 			}
 		}
@@ -38,31 +38,31 @@ static void exec_bin(t_shell *shell, char **args, int background)
     {
         new_process_group(pid_fork);
         if (set_terminal(pid_fork) == -1)
-            ft_perror(shell, "tcsetpgrp", "");
+            ft_perror("tcsetpgrp", "");
         if (waitpid(pid_fork, &status, WUNTRACED) == -1)
-            ft_perror(shell, "waitpid", "");
+            ft_perror("waitpid", "");
         set_terminal(getpid());
         status_res = analyze_status(status, &info);
         if (status_res == SUSPENDED)
-            add_job(shell->job_l, new_job(pid_fork, args[0], STOPPED));
+            add_job(shell.job_l, new_job(pid_fork, args[0], STOPPED));
         if (info != 127)
             fprintf(stderr, "Foreground pid: %d, command: %s, %s, info: %d\n", pid_fork, args[0], status_strings[status_res], info);
     }
     else
     {
-        add_job(shell->job_l, new_job(pid_fork, args[0], BACKGROUND));
+        add_job(shell.job_l, new_job(pid_fork, args[0], BACKGROUND));
         fprintf(stderr, "Background job running... pid: %d, command: %s\n", pid_fork, args[0]);
     }
 }
 
-void exec_cmd(t_shell *shell, char **args, int background)
+void exec_cmd(char **args, int background)
 {
     if (strcmp(args[0], "cd") == 0)
-        cd(shell, args);
+        cd(args);
     else if (strcmp(args[0], "jobs") == 0)
-        print_job_list(shell->job_l);
+        print_job_list(shell.job_l);
     else if (strcmp(args[0], "fg") == 0)
-        fg(shell, args);
+        fg(args);
     else
-        exec_bin(shell, args, background);
+        exec_bin(args, background);
 }

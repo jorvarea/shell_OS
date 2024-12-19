@@ -1,6 +1,7 @@
+#include "shell.h"
 #include "utils.h"
 
-static void	change_directory(t_shell *shell, char *path)
+static void	change_directory(char *path)
 {
 	char	pwd[MAX_ENV_SIZE];
 	char	oldpwd[MAX_ENV_SIZE];
@@ -15,27 +16,27 @@ static void	change_directory(t_shell *shell, char *path)
 				setenv("PWD", strdup(pwd), 1);
 			}
 			else
-				ft_perror(shell, "getcwd", "");
+				ft_perror("getcwd", "");
 		}
 		else
-			ft_perror(shell, "chdir", path);
+			ft_perror("chdir", path);
 	}
 	else
-		ft_perror(shell, "getcwd", "");
+		ft_perror("getcwd", "");
 }
 
-static void	take_me_home(t_shell *shell)
+static void	take_me_home()
 {
 	char	*home;
 
 	home = getenv("HOME");
 	if (home)
-		change_directory(shell, home);
+		change_directory(home);
 	else
-		shell_error(shell, "-shell: cd: HOME not set", 1);
+		shell_error("-shell: cd: HOME not set", 1);
 }
 
-static void	take_me_back(t_shell *shell)
+static void	take_me_back()
 {
 	char	pwd[MAX_ENV_SIZE];
 	char	*oldpwd;
@@ -43,33 +44,33 @@ static void	take_me_back(t_shell *shell)
 	oldpwd = getenv("OLDPWD");
 	if (oldpwd)
 	{
-		change_directory(shell, oldpwd);
+		change_directory(oldpwd);
 		if (getcwd(pwd, MAX_ENV_SIZE))
 			printf("%s\n", pwd);
 		else
-			ft_perror(shell, "getcwd", "");
+			ft_perror("getcwd", "");
 	}
 	else
-		shell_error(shell, "-shell: cd: OLDPWD not set", 1);
+		shell_error("-shell: cd: OLDPWD not set", 1);
 }
 
-static void	process_cd_args(t_shell *shell, char **args)
+static void	process_cd_args(char **args)
 {
 	if (!args[1])
-		take_me_home(shell);
+		take_me_home();
 	else if (args[1] && args[1][0] == '-' && args[1][1] == '\0')
-		take_me_back(shell);
+		take_me_back();
 	else
-		change_directory(shell, args[1]);
+		change_directory(args[1]);
 }
 
-void	cd(t_shell *shell, char **args)
+void	cd(char **args)
 {
-	shell->exit_status = 0;
+	shell.exit_status = 0;
 	if (found_flags(args))
-		invalid_flag_error(shell, "cd", args[1][1], "cd [dir]");
+		invalid_flag_error("cd", args[1][1], "cd [dir]");
 	else if (count_words(args) > 2)
-		shell_error(shell, "-shell: cd: too many arguments", 1);
+		shell_error("-shell: cd: too many arguments", 1);
 	else
-		process_cd_args(shell, args);
+		process_cd_args(args);
 }

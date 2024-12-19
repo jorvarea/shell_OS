@@ -1,21 +1,21 @@
 #include "shell.h"
 
-void	invalid_flag_error(t_shell *shell, char *cmd, char invalid_flag, char *usage)
+void	invalid_flag_error(char *cmd, char invalid_flag, char *usage)
 {
-	shell->exit_status = 2;
+	shell.exit_status = 2;
 	fprintf(stderr, "-shell: %s: -%c: invalid option\n", cmd, invalid_flag);
 	fprintf(stderr, "%s: usage: %s\n", cmd, usage);
 }
 
-void	shell_error(t_shell *shell, char *msg, int exit_status)
+void	shell_error(char *msg, int exit_status)
 {
-	shell->exit_status = exit_status;
+	shell.exit_status = exit_status;
 	fprintf(stderr, "%s\n", msg);
 }
 
-void	ft_perror(t_shell *shell, char *function, char *arg)
+void	ft_perror(char *function, char *arg)
 {
-	shell->exit_status = 1;
+	shell.exit_status = 1;
 	fprintf(stderr, "-shell: ");
 	if (function && function[0] != '\0')
 		fprintf(stderr, "%s: ", function);
