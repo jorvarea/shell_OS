@@ -63,6 +63,5 @@ int main(void)
 		else
 			exec_redir_cmd(args, background, file_in, file_out);
 	}
-	// liberar memoria: jobs
 	return (0);
 }
