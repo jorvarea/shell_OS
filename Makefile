@@ -1,12 +1,12 @@
 NAME = a.out
 
 CC = gcc
-CFLAGS = -Iinclude -Wall -Wextra -Werror
+CFLAGS = -Iinclude -Wall -Wextra
 RM = rm -f
 
-SRC = $(wildcard src/*.c)
+SRC = $(wildcard src/*.c) $(wildcard *.c)
 OBJ = $(SRC:src/%.c=obj/%.o)
-DEPS = $(wildcard include/*.h)
+DEPS = $(wildcard include/*.h) $(wildcard *.h)
 
 ################################################################################
 ##                                  COLORS                                    ##
