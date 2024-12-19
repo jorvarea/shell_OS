@@ -1,4 +1,4 @@
-NAME = shell
+NAME = a.out
 
 CC = gcc
 CFLAGS = -Iinclude #-Wall -Wextra -Werror
@@ -39,7 +39,7 @@ obj:
 
 line :
 	@echo "$(GREEN) $(BOLD)"
-	@echo "  COMPILING MINISHELL...$(END) $(GREEN)"
+	@echo "  COMPILING SHELL...$(END) $(GREEN)"
 	@echo "✦ ---------------------- ✦"
 
 clean :
