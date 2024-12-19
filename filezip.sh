@@ -1,1 +1,1 @@
-zip -r shell_SO_GCIA_34.zip include src Makefile
+zip -r shell_SO_GCIA_34.zip include src Makefile filezip.sh
