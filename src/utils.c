@@ -16,12 +16,12 @@ void	shell_error(t_shell *shell, char *msg, int exit_status)
 void	ft_perror(t_shell *shell, char *function, char *arg)
 {
 	shell->exit_status = 1;
-	printf("-shell: ");
+	fprintf(stderr, "-shell: ");
 	if (function && function[0] != '\0')
-		printf("%s: ", function);
+		fprintf(stderr, "%s: ", function);
 	if (arg && arg[0] != '\0')
-		printf("%s: ", arg);
-	printf("%s\n", strerror(errno));
+		fprintf(stderr, "%s: ", arg);
+	fprintf(stderr, "%s\n", strerror(errno));
 }
 
 pid_t	safe_fork(void)
