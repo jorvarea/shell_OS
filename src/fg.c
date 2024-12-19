@@ -2,6 +2,8 @@
 
 void bring_job_foreground(job *background_job)
 {
+	enum status status_res;
+    int info;
     int status;
 
     if (set_terminal(background_job->pgid) == -1)
@@ -13,7 +15,11 @@ void bring_job_foreground(job *background_job)
         ft_perror("waitpid", "");
     if (set_terminal(getpid()) == -1)
         ft_perror("tcsetpgrp", "");
-    delete_job(shell.job_l, background_job);
+    status_res = analyze_status(status, &info);
+    if (status_res == EXITED)
+        delete_job(shell.job_l, background_job);
+    else if(status_res == SUSPENDED)
+        background_job->state = STOPPED;
 }
 
 void fg(char **args)
