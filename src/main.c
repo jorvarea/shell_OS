@@ -23,7 +23,7 @@ void child_handler(int signal_id)
     int pid_wait;
 
 	block_SIGCHLD();
-	while ((pid_wait = waitpid(-1, &status, WNOHANG)) > 0)
+	while ((pid_wait = waitpid(-1, &status, WNOHANG | WCONTINUED)) > 0)
 	{
 		job = get_item_bypid(shell.job_l, pid_wait);
 		if (job != NULL)
@@ -36,6 +36,8 @@ void child_handler(int signal_id)
 			}
 			else if (status_res == SUSPENDED)
 				job->state = STOPPED;
+			else if (status_res == CONTINUED)
+				job->state = BACKGROUND;
 		}
 	}
 	unblock_SIGCHLD();
