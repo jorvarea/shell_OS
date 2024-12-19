@@ -23,7 +23,7 @@ void child_handler(int signal_id)
     int pid_wait;
 
 	block_SIGCHLD();
-	while ((pid_wait = waitpid(-1, &status, WNOHANG | WCONTINUED)) > 0)
+	while ((pid_wait = waitpid(-1, &status, WNOHANG | WCONTINUED | WUNTRACED)) > 0)
 	{
 		job = get_item_bypid(shell.job_l, pid_wait);
 		if (job != NULL)
