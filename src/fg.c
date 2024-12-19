@@ -34,7 +34,7 @@ void fg(char **args)
         if (background_job == NULL)
             shell_error("Job not found", 1);
         else
-            bring_job_foreground(background_job);        
+            bring_job_foreground(background_job);
     }
     else
 		shell_error("fg: too many arguments", 1);
