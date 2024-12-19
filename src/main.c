@@ -14,7 +14,7 @@ int main(void)
 {
 	char inputBuffer[MAX_LINE];
 	char *args[MAX_LINE/2];
-	int background;             /* equals 1 if a command is followed by '&' */
+	int background;
 	char *file_in;
 	char *file_out;
 	int original_stdin;

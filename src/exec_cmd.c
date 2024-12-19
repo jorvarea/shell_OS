@@ -29,7 +29,7 @@ static void exec_bin(t_shell *shell, char **args, int background)
 			}
 		}
 	}
-	else if (background == 0)
+	else if (background != 1)
 	{
 		set_terminal(pid_fork);
 		waitpid(pid_fork, &status, WUNTRACED);
