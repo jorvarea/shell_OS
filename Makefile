@@ -1,12 +1,12 @@
 NAME = a.out
 
 CC = gcc
-CFLAGS = -Iinclude -Wall -Wextra
+CFLAGS = -Wall -Wextra
 RM = rm -f
 
-SRC = $(wildcard src/*.c) $(wildcard *.c)
-OBJ = $(SRC:src/%.c=obj/%.o)
-DEPS = $(wildcard include/*.h) $(wildcard *.h)
+SRC = $(wildcard *.c)
+OBJ = $(SRC:%.c=obj/%.o)
+DEPS = $(wildcard *.h)
 
 ################################################################################
 ##                                  COLORS                                    ##
@@ -30,7 +30,7 @@ $(NAME) : $(OBJ)
 	@echo "  ✓  Linked: $(NAME)"
 	@echo "✦ ---------------------- ✦$(END)"
 
-obj/%.o : src/%.c | obj
+obj/%.o : %.c | obj
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "$(GREEN)  ✓ Compiled: $(notdir $<)$(END)"
 

@@ -1,3 +1,5 @@
+// Jorge Varea Durán
+
 #include "shell.h"
 
 void	invalid_flag_error(char *cmd, char invalid_flag, char *usage)

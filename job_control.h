@@ -1,3 +1,5 @@
+// Jorge Varea Durán
+
 #ifndef _JOB_CONTROL_H
 #define _JOB_CONTROL_H
 

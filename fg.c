@@ -1,3 +1,5 @@
+// Jorge Varea Durán
+
 #include "shell.h"
 
 void bring_job_foreground(job *background_job)

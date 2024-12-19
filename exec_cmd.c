@@ -1,3 +1,5 @@
+// Jorge Varea Durán
+
 #include "shell.h"
 #include "built_ins.h"
 #include "job_control.h"

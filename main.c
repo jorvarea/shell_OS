@@ -1,3 +1,5 @@
+// Jorge Varea Durán
+
 #include "shell.h"
 
 #define MAX_LINE 256

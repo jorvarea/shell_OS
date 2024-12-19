@@ -1,3 +1,5 @@
+// Jorge Varea Durán
+
 #include "shell.h"
 
 void parse_redirections(char **args,  char **file_in, char **file_out)

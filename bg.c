@@ -1,3 +1,5 @@
+// Jorge Varea Durán
+
 #include "shell.h"
 
 void continue_job_background(job *background_job)
