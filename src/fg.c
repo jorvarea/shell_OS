@@ -6,11 +6,15 @@ void bring_job_foreground(t_shell *shell, job *background_job)
 {
     int status;
 
-    set_terminal(background_job->pgid);
+    if (set_terminal(background_job->pgid) == -1)
+        ft_perror(shell, "tcsetpgrp", "");
     background_job->state = FOREGROUND;
-    killpg(background_job->pgid, SIGCONT);
-    waitpid(background_job->pgid, &status, WUNTRACED);
-    set_terminal(getpid());
+    if (killpg(background_job->pgid, SIGCONT) == -1)
+        ft_perror(shell, "killpg", "SIGCONT");
+    if (waitpid(background_job->pgid, &status, WUNTRACED) == -1)
+        ft_perror(shell, "waitpid", "");
+    if (set_terminal(getpid()) == -1)
+        ft_perror(shell, "tcsetpgrp", "");
     delete_job(shell->job_l, background_job);
 }
 
